@@ -13,25 +13,37 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="#">TOKITA</a>
+      <button class="btn btn-outline-light position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <i class="bi bi-cart3"></i> Keranjang
+        <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          0
+        </span>
+      </button>
     </div>
   </nav>
 
   <div class="container my-4">
     <div class="row g-3">
-      <div class="col-12 col-md-8">
+      <div class="col-12 col-md-5">
         <input type="text" id="searchInput" class="form-control" placeholder="Cari produk berdasarkan nama...">
       </div>
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-sm-6 col-md-4">
         <select id="categorySelect" class="form-select">
           <option value="all">Semua Kategori</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <select id="sortSelect" class="form-select">
+          <option value="default">Urutkan Harga</option>
+          <option value="low">Termurah -> Termahal</option>
+          <option value="high">Termahal -> Termurah</option>
         </select>
       </div>
     </div>
   </div>
 
   <div class="container mb-5">
-    <div id="productGrid" class="row g-3 g-sm-4">
-    </div>
+    <div id="productGrid" class="row g-3 g-sm-4"></div>
   </div>
 
   <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
@@ -41,7 +53,28 @@
           <h5 class="modal-title" id="modalTitle">Detail Produk</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body text-center" id="modalBody">
+        <div class="modal-body text-center" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-cart-check"></i> Keranjang Belanja</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cartItemsList" class="list-group mb-3"></div>
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <h5 class="mb-0">Total:</h5>
+            <h4 class="mb-0 text-primary fw-bold" id="cartTotal">$0.00</h4>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-success" onclick="checkout()">Checkout</button>
         </div>
       </div>
     </div>
