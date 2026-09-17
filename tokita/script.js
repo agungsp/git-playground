@@ -12,7 +12,7 @@ const cartTotal = document.getElementById('cartTotal');
 async function fetchProducts() {
   try {
     const response = await fetch('https://fakestoreapi.com/products');
-    if (!response.ok) throw new Error('Gagal mengambil data');
+    if (!response.ok) throw new Error('Gagal mengambil data dari API');
     
     productsData = await response.json();
     populateCategories(productsData);
@@ -20,7 +20,12 @@ async function fetchProducts() {
     updateCartUI();
   } catch (error) {
     console.error('Error:', error);
-    productGrid.innerHTML = `<p class="text-danger text-center my-5">Gagal memuat produk.</p>`;
+    productGrid.innerHTML = `
+      <div class="col-12 text-center my-5 text-danger">
+        <i class="bi bi-exclamation-circle fs-2"></i>
+        <p class="mt-2">Gagal memuat produk. Pastikan koneksi internet terhubung.</p>
+      </div>
+    `;
   }
 }
 
@@ -47,9 +52,9 @@ function renderProducts(products) {
       <div class="card product-card p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
         <div onclick="showDetail(${product.id})" style="cursor: pointer;">
           <div class="product-img-container mb-3 text-center">
-            <img src="${product.image}" class="product-img img-fluid" style="max-height: 150px; object-fit: contain;" alt="${product.title}">
+            <img src="${product.image}" class="product-img img-fluid" alt="${product.title}">
           </div>
-          <h5 class="product-title card-title mb-2 text-truncate" title="${product.title}">${product.title}</h5>
+          <h5 class="product-title card-title mb-2" title="${product.title}">${product.title}</h5>
           <p class="card-text fw-bold fs-5 text-primary mb-2">$${product.price.toFixed(2)}</p>
           <span class="badge bg-secondary mb-3">${product.category}</span>
         </div>
@@ -167,6 +172,35 @@ function checkout() {
   bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
 }
 
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIcon = document.getElementById('themeIcon');
+const htmlElement = document.documentElement;
+
+const currentTheme = localStorage.getItem('tokita_theme') || 'light';
+setTheme(currentTheme);
+
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+  });
+}
+
+function setTheme(theme) {
+  htmlElement.setAttribute('data-bs-theme', theme);
+  localStorage.setItem('tokita_theme', theme);
+
+  if (themeIcon && themeToggleBtn) {
+    if (theme === 'dark') {
+      themeIcon.className = 'bi bi-sun-fill';
+      themeToggleBtn.classList.replace('btn-outline-warning', 'btn-warning');
+    } else {
+      themeIcon.className = 'bi bi-moon-stars-fill';
+      themeToggleBtn.classList.replace('btn-warning', 'btn-outline-warning');
+    }
+  }
+}
+
 function debounce(func, delay) {
   let timeoutId;
   return function (...args) {
@@ -178,4 +212,5 @@ function debounce(func, delay) {
 searchInput.addEventListener('input', debounce(applyFilters, 600));
 categorySelect.addEventListener('change', applyFilters);
 sortSelect.addEventListener('change', applyFilters);
-document.addEventListener('DOMContentLoaded', fetchProducts);;
+
+document.addEventListener('DOMContentLoaded', fetchProducts);
