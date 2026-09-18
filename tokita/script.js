@@ -1,15 +1,36 @@
 let productsData = [];
+let filteredProductsData = [];
 let cart = JSON.parse(localStorage.getItem('tokita_cart')) || [];
+
+let currentPage = 1;
+const itemsPerPage = 6;
 
 const productGrid = document.getElementById('productGrid');
 const searchInput = document.getElementById('searchInput');
 const categorySelect = document.getElementById('categorySelect');
 const sortSelect = document.getElementById('sortSelect');
+const paginationContainer = document.getElementById('pagination');
 const cartCount = document.getElementById('cartCount');
 const cartItemsList = document.getElementById('cartItemsList');
 const cartTotal = document.getElementById('cartTotal');
 
+function renderSkeleton() {
+  const skeletonCards = Array(itemsPerPage).fill(0).map(() => `
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card product-card p-3 shadow-sm h-100">
+        <div class="skeleton skeleton-img mb-3"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-btn mt-auto"></div>
+      </div>
+    </div>
+  `).join('');
+
+  productGrid.innerHTML = skeletonCards;
+}
+
 async function fetchProducts() {
+  renderSkeleton();
   try {
     const response = await fetch('https://fakestoreapi.com/products');
     if (!response.ok) throw new Error('Gagal mengambil data dari API');
@@ -36,25 +57,30 @@ function populateCategories(products) {
   ).join('');
 }
 
-function renderProducts(products) {
-  if (products.length === 0) {
+function renderProducts() {
+  if (filteredProductsData.length === 0) {
     productGrid.innerHTML = `
       <div class="col-12 text-center my-5 text-muted">
         <i class="bi bi-search fs-2"></i>
         <p class="mt-2">Produk tidak ditemukan.</p>
       </div>
     `;
+    paginationContainer.innerHTML = '';
     return;
   }
 
-  productGrid.innerHTML = products.map(product => `
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = filteredProductsData.slice(startIndex, endIndex);
+
+  productGrid.innerHTML = paginatedProducts.map(product => `
     <div class="col-12 col-sm-6 col-lg-4">
       <div class="card product-card p-3 shadow-sm h-100 d-flex flex-column justify-content-between">
         <div onclick="showDetail(${product.id})" style="cursor: pointer;">
           <div class="product-img-container mb-3 text-center">
             <img src="${product.image}" class="product-img img-fluid" alt="${product.title}">
           </div>
-          <h5 class="product-title card-title mb-2" title="${product.title}">${product.title}</h5>
+          <h5 class="product-title card-title mb-2 text-truncate" title="${product.title}">${product.title}</h5>
           <p class="card-text fw-bold fs-5 text-primary mb-2">$${product.price.toFixed(2)}</p>
           <span class="badge bg-secondary mb-3">${product.category}</span>
         </div>
@@ -64,6 +90,44 @@ function renderProducts(products) {
       </div>
     </div>
   `).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredProductsData.length / itemsPerPage);
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+
+  let paginationHtml = `
+    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+      <button class="page-link" onclick="changePage(${currentPage - 1})">Prev</button>
+    </li>
+  `;
+
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHtml += `
+      <li class="page-item ${i === currentPage ? 'active' : ''}">
+        <button class="page-link" onclick="changePage(${i})">${i}</button>
+      </li>
+    `;
+  }
+
+  paginationHtml += `
+    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+      <button class="page-link" onclick="changePage(${currentPage + 1})">Next</button>
+    </li>
+  `;
+
+  paginationContainer.innerHTML = paginationHtml;
+}
+
+function changePage(page) {
+  currentPage = page;
+  renderProducts();
+  document.getElementById('katalog').scrollIntoView({ behavior: 'smooth' });
 }
 
 function showDetail(productId) {
@@ -92,19 +156,20 @@ function applyFilters() {
   const selectedCategory = categorySelect.value;
   const sortValue = sortSelect.value;
 
-  let filtered = productsData.filter(product => {
+  filteredProductsData = productsData.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm);
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   if (sortValue === 'low') {
-    filtered.sort((a, b) => a.price - b.price);
+    filteredProductsData.sort((a, b) => a.price - b.price);
   } else if (sortValue === 'high') {
-    filtered.sort((a, b) => b.price - a.price);
+    filteredProductsData.sort((a, b) => b.price - a.price);
   }
 
-  renderProducts(filtered);
+  currentPage = 1;
+  renderProducts();
 }
 
 function addToCart(productId) {
