@@ -1,9 +1,23 @@
+<<<<<<< HEAD
 let allProducts = [];
 const productGrid = document.getElementById('productGrid');
 
 async function loadProducts() {
   renderLoading();
 
+=======
+let allProducts = [];       
+let filteredProducts = [];  
+
+const productGrid = document.getElementById('productGrid');
+const searchInput = document.getElementById('searchInput');
+const categorySelect = document.getElementById('categorySelect');
+const sortSelect = document.getElementById('sortSelect');
+
+async function loadProducts() {
+  renderLoading();
+
+>>>>>>> feature/menampilkan_semua_produk
   try {
     const response = await fetch('https://fakestoreapi.com/products');
     
@@ -12,7 +26,14 @@ async function loadProducts() {
     }
 
     allProducts = await response.json();
+<<<<<<< HEAD
     renderProducts(allProducts);
+=======
+    filteredProducts = [...allProducts];
+
+    populateCategories();
+    applyFilters();
+>>>>>>> feature/menampilkan_semua_produk
   } catch (error) {
     productGrid.innerHTML = `
       <div class="col-12 text-center py-5">
@@ -23,6 +44,44 @@ async function loadProducts() {
   }
 }
 
+<<<<<<< HEAD
+=======
+function populateCategories() {
+  const categories = ['all', ...new Set(allProducts.map(p => p.category))];
+  categorySelect.innerHTML = categories.map(cat => 
+    `<option value="${cat}">${cat.toUpperCase()}</option>`
+  ).join('');
+}
+
+let debounceTimer;
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    applyFilters();
+  }, 400);
+});
+
+categorySelect.addEventListener('change', applyFilters);
+sortSelect.addEventListener('change', applyFilters);
+
+function applyFilters() {
+  const keyword = searchInput.value.toLowerCase().trim();
+  const selectedCat = categorySelect.value;
+  const sortType = sortSelect.value;
+
+  filteredProducts = allProducts.filter(product => {
+    const matchSearch = product.title.toLowerCase().includes(keyword);
+    const matchCat = selectedCat === 'all' || product.category === selectedCat;
+    return matchSearch && matchCat;
+  });
+
+  if (sortType === 'low') filteredProducts.sort((a, b) => a.price - b.price);
+  if (sortType === 'high') filteredProducts.sort((a, b) => b.price - a.price);
+
+  renderProducts(filteredProducts);
+}
+
+>>>>>>> feature/menampilkan_semua_produk
 function renderLoading() {
   productGrid.innerHTML = `
     <div class="col-12 text-center py-5">
@@ -34,7 +93,16 @@ function renderLoading() {
 
 function renderProducts(products) {
   if (products.length === 0) {
+<<<<<<< HEAD
     productGrid.innerHTML = `<p class="text-center w-100 py-5 text-muted">Tidak ada produk yang tersedia.</p>`;
+=======
+    productGrid.innerHTML = `
+      <div class="col-12 text-center py-5 text-muted">
+        <p class="fs-5 mb-0">Produk tidak ditemukan.</p>
+        <small>Coba kata kunci atau kategori lain.</small>
+      </div>
+    `;
+>>>>>>> feature/menampilkan_semua_produk
     return;
   }
 
@@ -51,4 +119,8 @@ function renderProducts(products) {
   `).join('');
 }
 
+<<<<<<< HEAD
 loadProducts();
+=======
+loadProducts();
+>>>>>>> feature/menampilkan_semua_produk

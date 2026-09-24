@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 [data-bs-theme="light"] {
   --bg-color: #f8f9fa;
   --card-bg: #ffffff;
@@ -99,6 +100,8 @@ body {
   font-weight: 600;
   line-height: 1.3;
 =======
+=======
+>>>>>>> feature/menampilkan_semua_produk
 .mascot-nav {
   width: 32px;
   height: 32px;
@@ -133,5 +136,8 @@ body {
   height: 180px;
   object-fit: contain;
   padding: 15px;
+<<<<<<< HEAD
 >>>>>>> feature/layouting_website
+=======
+>>>>>>> feature/menampilkan_semua_produk
 }
