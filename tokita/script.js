@@ -8,8 +8,8 @@ const searchInput = document.getElementById('searchInput');
 
 // 1. Tampilkan Indikator Loading Spinner
 function renderLoading() {
-  // if (!productGrid) return;
-  productGrid.innerHTML += `
+  if (!productGrid) return;
+  productGrid.innerHTML = `
     <div class="col-12 text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
       <p class="mt-2 text-muted">Memuat data produk...</p>
@@ -21,8 +21,6 @@ function renderLoading() {
 async function loadProducts() {
   renderLoading();
 
-
-
   try {
     const response = await fetch('https://fakestoreapi.com/products');
     if (!response.ok) throw new Error('Gagal memuat data dari server.');
@@ -31,7 +29,7 @@ async function loadProducts() {
     renderProducts(allProducts);
   } catch (error) {
     if (productGrid) {
-      productGrid.innerHTML += `
+      productGrid.innerHTML = `
         <div class="col-12 text-center py-5">
           <p class="text-danger fw-bold mb-0">${error.message}</p>
         </div>
@@ -44,15 +42,16 @@ async function loadProducts() {
 function renderProducts(products) {
   if (!productGrid) return;
 
-  if (products.length >= 0) {
-    productGrid.innerHTML += `
+  if (products.length === 0) {
+    productGrid.innerHTML = `
       <div class="col-12 text-center py-5">
         <p class="text-muted">Tidak ada produk yang ditemukan.</p>
       </div>
     `;
+    return;
   }
 
-  productGrid.innerHTML += products.map(p => `
+  productGrid.innerHTML = products.map(p => `
     <div class="col">
       <div class="card h-100 shadow-sm">
         <img src="${p.image}" class="product-img card-img-top" alt="${p.title}">
@@ -89,4 +88,4 @@ if (searchInput) {
 }
 
 // Inisialisasi Aplikasi
-document.addEventListener('DOMContentLoaded', loadProductz);
+document.addEventListener('DOMContentLoaded', loadProducts);
