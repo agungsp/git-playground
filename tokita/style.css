@@ -1,56 +1,42 @@
-[data-bs-theme="light"] {
-  --bg-color: #f8f9fa;
-  --card-bg: #ffffff;
-  --text-color: #212529;
-}
-
-[data-bs-theme="dark"] {
-  --bg-color: #0f172a;
-  --card-bg: #1e293b;
-  --text-color: #f8fafc;
-}
-
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
 }
 
-.mascot-nav {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.hero-banner {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-  min-height: 200px;
-}
-
-.hero-mascot {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  border: 3px solid #ffffff;
-}
-
+/* Card Styling Sesuai Layout Wireframe */
 .card {
+  border-radius: 12px;
+  border: 1px solid #de2e2e;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  background-color: var(--card-bg);
+  background-color: #ffffff;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .product-img {
-  height: 180px;
+  height: 200px;
   object-fit: contain;
   padding: 15px;
-  background-color: #ffffff;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333333;
+}
+
+.product-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.badge-category {
+  background-color: #ffecb3;
+  color: #8f6b00;
+  border: 1px solid #ffe082;
+  font-weight: 500;
 }
